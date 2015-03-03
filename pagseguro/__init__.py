@@ -2,6 +2,6 @@
 
 from __future__ import unicode_literals, absolute_import
 
-from pagseguro import PagseguroClient
+from .client import PagseguroClient
 
-version = (0, 1)
+version = (0, 1, 0)

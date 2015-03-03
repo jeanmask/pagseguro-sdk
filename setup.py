@@ -9,16 +9,18 @@ except ImportError:
 import pagseguro
 
 
+REQUIREMENTS = [i.strip() for i in open("requirements.txt").readlines()]
+
 setup(
     name='Pagseguro SDK',
-    version=pagseguro.version,
+    version=".".join(map(str, pagseguro.version)),
     description='SDK para utilização do PagSeguro em Python',
     url='https://pagseguro-sdk.readthedocs.com/',
     author='Jean O. Rodrigues',
     author_email='github@jean.bz',
     license='MIT',
     packages=['pagseguro'],
-    install_requires=['requests>=2.4.0', 'beautifulsoup4>=4.3.0'],
+    install_requires=REQUIREMENTS,
     classifiers=[
         'Development Status :: 4 - Beta',
         'Environment :: Console',
