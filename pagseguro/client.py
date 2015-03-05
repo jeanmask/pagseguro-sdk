@@ -92,6 +92,9 @@ class PagseguroClient(object):
 
         return params
 
+    def payment_url(self, code):
+        return '{0}/v2/checkout/payment.html?code={1}'.format(self.url, code)
+
     def checkout(self, items, sender=None, reference=None, shipping=None):
         params = self.parse_checkout_params(items, sender, reference, shipping)
 
@@ -103,6 +106,5 @@ class PagseguroClient(object):
         response_data = response.xml()
 
         code = response_data['checkout']['code']
-        payment_url = '{0}/v2/checkout/payment.html?code={1}'
 
-        return (code, payment_url.format(self.url, code))
+        return (code, self.payment_url(code))

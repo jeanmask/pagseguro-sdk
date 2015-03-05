@@ -16,6 +16,7 @@ setup(
     url='https://pagseguro-sdk.readthedocs.com/',
     author='Jean O. Rodrigues',
     author_email='github@jean.bz',
+    download_url='https://github.com/jeanmask/pagseguro-sdk/archive/v0.1.0.tar.gz',
     license='MIT',
     packages=['pagseguro'],
     install_requires=REQUIREMENTS,
