@@ -7,14 +7,24 @@ import requests
 import xmltodict
 
 
-def xml_parser(r, *args, **kwargs):
-    r.xml = lambda: xmltodict.parse(r.text)
+class PagseguroApiError(Exception):
+    pass
 
 
 class PagseguroClient(object):
     HTTP_METHODS = ['get', 'post']
-    API = 'https://ws.pagseguro.uol.com.br/'
+
+    API = 'https://ws.pagseguro.uol.com.br'
     API_SANDBOX = 'https://ws.sandbox.pagseguro.uol.com.br'
+
+    URL = 'https://pagseguro.uol.com.br'
+    URL_SANDBOX = 'https://sandbox.pagseguro.uol.com.br'
+
+    CHECKOUT_DEFAULS = {'currency': 'BRL'}
+
+    @staticmethod
+    def parse_response(response, *args, **kwargs):
+        response.xml = lambda: xmltodict.parse(response.content)
 
     def __init__(self, email, token, sandbox=False, charset='utf-8'):
         """
@@ -28,6 +38,7 @@ class PagseguroClient(object):
         self.token = token
         self.charset = charset
         self.api = self.API_SANDBOX if sandbox else self.API
+        self.url = self.URL_SANDBOX if sandbox else self.URL
 
     def __getattr__(self, name):
         if name not in self.HTTP_METHODS:
@@ -55,7 +66,7 @@ class PagseguroClient(object):
             kwargs['headers'] = headers
             kwargs['params'] = params
 
-            kwargs['hooks'] = {'response': xml_parser}
+            kwargs['hooks'] = {'response': self.__class__.parse_response}
 
             if not url[:4] == "http":
                 url = self.api + url
@@ -63,3 +74,35 @@ class PagseguroClient(object):
             return request_func(url, **kwargs)
 
         return caller
+
+    def parse_checkout_params(self, items, sender, reference, shipping):
+        params = self.CHECKOUT_DEFAULS or {}
+
+        for ix, item in enumerate(items):
+            for k, v in item.items():
+                params['item{0}{1}'.format(k.capitalize(), ix + 1)] = v
+        if sender:
+            for k, v in sender.items():
+                params['sender{0}'.format(k.capitalize())] = v
+        if shipping:
+            for k, v in shipping.items():
+                params['shipping{0}'.format(k.capitalize())] = v
+        if reference:
+            params['reference'] = reference
+
+        return params
+
+    def checkout(self, items, sender=None, reference=None, shipping=None):
+        params = self.parse_checkout_params(items, sender, reference, shipping)
+
+        response = self.post('/v2/checkout', params=params)
+
+        if response.status_code != 200:
+            raise PagseguroApiError(response.text)
+
+        response_data = response.xml()
+
+        code = response_data['checkout']['code']
+        payment_url = '{0}/v2/checkout/payment.html?code={1}'
+
+        return (code, payment_url.format(self.url, code))

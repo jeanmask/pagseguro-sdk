@@ -6,14 +6,12 @@ try:
 except ImportError:
     from distutils.core import setup
 
-import pagseguro
-
 
 REQUIREMENTS = [i.strip() for i in open("requirements.txt").readlines()]
 
 setup(
     name='Pagseguro SDK',
-    version=".".join(map(str, pagseguro.version)),
+    version="0.1.0",
     description='SDK para utilização do PagSeguro em Python',
     url='https://pagseguro-sdk.readthedocs.com/',
     author='Jean O. Rodrigues',
