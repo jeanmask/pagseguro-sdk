@@ -13,7 +13,7 @@ setup(
     name='pagseguro-sdk',
     version="0.1.0",
     description='SDK para utilização do PagSeguro em Python',
-    url='https://pagseguro-sdk.readthedocs.com/',
+    url='http://pagseguro-sdk.readthedocs.org/',
     author='Jean O. Rodrigues',
     author_email='github@jean.bz',
     download_url='https://github.com/jeanmask/pagseguro-sdk/archive/v0.1.0.tar.gz',
