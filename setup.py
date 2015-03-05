@@ -10,7 +10,7 @@ except ImportError:
 REQUIREMENTS = [i.strip() for i in open("requirements.txt").readlines()]
 
 setup(
-    name='Pagseguro SDK',
+    name='pagseguro-sdk',
     version="0.1.0",
     description='SDK para utilização do PagSeguro em Python',
     url='https://pagseguro-sdk.readthedocs.com/',
